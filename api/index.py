@@ -567,8 +567,9 @@ def logout():
     return redirect(url_for("portal"))
 
 try:
-    from vercel_wsgi import make_app
-    handler = make_app(app)
+    from serverless_wsgi import handle_request
+    def handler(event, context):
+        return handle_request(app, event, context)
 except ImportError:
     if __name__ == "__main__":
         app.run()
