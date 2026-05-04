@@ -565,6 +565,9 @@ def change_password():
 def logout():
     session.clear()
 
-from vercel_wsgi import make_app
-
-handler = make_app(app)
+try:
+    from vercel_wsgi import make_app
+    handler = make_app(app)
+except ImportError:
+    if __name__ == "__main__":
+        app.run()
