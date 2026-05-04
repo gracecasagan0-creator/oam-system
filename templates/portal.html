@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Office Asset Management System</title>
+
+    <style>
+        body{
+            background-color:#ffd6e7; /* soft pink */
+            font-family: Arial, sans-serif;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            height:100vh;
+            margin:0;
+        }
+
+        .portal-container{
+            background:white;
+            padding:40px;
+            border-radius:12px;
+            text-align:center;
+            box-shadow:0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        h2{
+            margin-bottom:30px;
+            color:#444;
+        }
+
+        .portal-btn{
+            width:200px;
+            padding:12px;
+            margin:10px;
+            border:none;
+            border-radius:8px;
+            font-size:16px;
+            cursor:pointer;
+            transition:0.3s;
+        }
+
+        .admin-btn{
+            background-color:#ff8fb1;
+            color:white;
+        }
+
+        .employee-btn{
+            background-color:#ffb3c6;
+            color:white;
+        }
+
+        .portal-btn:hover{
+            transform:scale(1.05);
+            opacity:0.9;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<div class="portal-container">
+
+    <h2>Office Asset Management System</h2>
+
+    <a href="/admin-login">
+        <button class="portal-btn admin-btn">Admin Portal</button>
+    </a>
+
+    <br>
+
+    <a href="/employee-login">
+        <button class="portal-btn employee-btn">Employee Portal</button>
+    </a>
+
+</div>
+
+</body>
+</html>

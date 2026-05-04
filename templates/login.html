@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Login</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+}
+
+body {
+    margin: 0;
+    height: 100vh;
+    background: linear-gradient(135deg, #ffb6c1, #fad0c4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-box {
+    background: white;
+    padding: 30px;
+    width: 320px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.flash {
+    background: #ffe6e6;
+    color: #a70000;
+    border: 1px solid #ffb3b3;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.input-group {
+    margin-bottom: 18px;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    background: #ffb6c1;
+    color: white;
+    font-size: 15px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #ffb6c1;
+}
+</style>
+
+</head>
+<body>
+
+<div class="login-box">
+
+<h2>Admin Login</h2>
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div class="flash">{{ messages[0] }}</div>
+  {% endif %}
+{% endwith %}
+
+<form method="POST" action="/admin-login">
+
+<div class="input-group">
+<input type="text" name="username" placeholder="Username" required>
+</div>
+
+<div class="input-group">
+<input type="password" name="password" placeholder="Password" required>
+</div>
+
+<button type="submit">Login</button>
+
+</form>
+
+</div>
+
+</body>
+</html>

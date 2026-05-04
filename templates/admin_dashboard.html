@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Office Asset Management System</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
+}
+
+body{
+    display:flex;
+    height:100vh;
+    background:#f5f6fa;
+}
+
+/* SIDEBAR */
+.sidebar{
+    width:240px;
+    background:#ffb6c1;
+    color:white;
+    padding:20px;
+}
+
+.sidebar h2{margin-bottom:20px;}
+
+.sidebar a{
+    display:block;
+    color:white;
+    text-decoration:none;
+    padding:10px;
+    margin-bottom:8px;
+    border-radius:6px;
+    cursor:pointer;
+}
+
+.sidebar a:hover{
+    background:rgba(255,255,255,0.2);
+}
+
+/* MAIN */
+.main{
+    flex:1;
+    padding:20px;
+}
+
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.logout{
+    background:#ff4d6d;
+    color:white;
+    padding:8px 15px;
+    border-radius:6px;
+    cursor:pointer;
+}
+
+/* SECTION */
+.section{display:none;}
+.active{display:block;}
+
+/* TABLE */
+.table{
+    background:white;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.1);
+    overflow:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th,td{
+    padding:10px;
+    border-bottom:1px solid #ddd;
+    text-align:center;
+}
+
+th{
+    background:#ffb6c1;
+    color:white;
+}
+
+/* BUTTONS */
+.btn{
+    padding:6px 10px;
+    border:none;
+    border-radius:5px;
+    color:white;
+    cursor:pointer;
+    margin:2px;
+}
+
+.add{background:green;}
+.assign{background:#007bff;}
+.delete{background:red;}
+.edit{background:orange;}
+
+/* DASHBOARD */
+.flash{
+    background:#ffe6e6;
+    border:1px solid #ffb3b3;
+    color:#a70000;
+    padding:12px;
+    border-radius:8px;
+    margin-bottom:16px;
+}
+
+.dashboard-card{
+    background:#ffe4ec;
+    padding:20px;
+    border-radius:12px;
+    text-align:center;
+}
+
+.dashboard-value{
+    font-size:28px;
+    font-weight:bold;
+    color:#ff4d6d;
+}
+</style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+<h2>OAM System</h2>
+
+<a onclick="showSection('dashboard')">Dashboard</a>
+<a onclick="showSection('assets')">Assets</a>
+<a onclick="showSection('employees')">Employees</a>
+<a onclick="showSection('assignments')">Assign Asset</a>
+<a onclick="showSection('requests')">Requests</a>
+<a onclick="showSection('maintenance')">Maintenance</a>
+<a onclick="showSection('depreciation')">Depreciation</a>
+<a onclick="showSection('reports')">Reports</a>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+<div class="header">
+<h1>Welcome Admin!</h1>
+<div class="logout" onclick="logoutUser()">Logout</div>
+</div>
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div class="flash">{{ messages[0] }}</div>
+  {% endif %}
+{% endwith %}
+
+<!-- DASHBOARD -->
+<div id="dashboard" class="section active">
+<h2>Dashboard</h2>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;margin-top:15px;">
+<div class="dashboard-card"><div>Total Assets</div><div class="dashboard-value">{{ assets|length }}</div></div>
+<div class="dashboard-card"><div>Total Employees</div><div class="dashboard-value">{{ employees|length }}</div></div>
+<div class="dashboard-card"><div>Assigned</div><div class="dashboard-value">{{ assets|selectattr('status', 'equalto', 'Assigned')|list|length }}</div></div>
+<div class="dashboard-card"><div>Available</div><div class="dashboard-value">{{ assets|selectattr('status', 'equalto', 'Available')|list|length }}</div></div>
+<div class="dashboard-card"><div>Depreciation</div><div class="dashboard-value">{{ depreciations|length }}</div></div>
+</div>
+</div>
+
+<!-- ASSETS -->
+<div id="assets" class="section">
+<div class="table">
+<h2>Assets</h2>
+
+<table id="assetTable">
+<tr><th>ID</th><th>Name</th><th>Status</th><th>Condition</th><th>Action</th></tr>
+{% for asset in assets %}
+<tr>
+<td>{{ asset.id }}</td>
+<td>{{ asset.name }}</td>
+<td>{{ asset.status }}</td>
+<td>{{ asset.condition or 'Good' }}</td>
+<td>
+<button class="btn edit" type="button" data-id="{{ asset.id }}" data-name="{{ asset.name }}" data-condition="{{ asset.condition or 'Good' }}" onclick="openUpdateAssetFromButton(this)">Update</button>
+<form method="POST" action="/delete-asset" style="display:inline;margin-left:4px;" onsubmit="return confirm('Delete this asset?');">
+<input type="hidden" name="asset_id" value="{{ asset.id }}">
+<button class="btn delete" type="submit">Delete</button>
+</form>
+</td>
+</tr>
+{% endfor %}
+</table>
+
+<div id="updateAssetSection" class="table" style="display:none; margin-top:16px;">
+<h3>Update Asset</h3>
+<form id="updateAssetForm" method="POST" action="/update-asset">
+<input type="hidden" name="asset_id" id="updateAssetId">
+<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
+<input type="text" name="name" id="updateAssetName" placeholder="Asset Name" required style="padding:8px;flex:1;min-width:200px;">
+<input type="text" name="condition" id="updateAssetCondition" placeholder="Condition" style="padding:8px;flex:1;min-width:200px;">
+<button class="btn edit" type="submit">Save Changes</button>
+<button class="btn delete" type="button" onclick="closeUpdateAsset()">Cancel</button>
+</div>
+</form>
+</div>
+
+<br>
+<form method="POST" action="/add-asset" style="display:inline;">
+<input type="text" name="id" placeholder="Asset ID" required style="padding:6px; margin-right:4px;">
+<input type="text" name="name" placeholder="Asset Name" required style="padding:6px; margin-right:4px;">
+<input type="text" name="condition" placeholder="Condition" style="padding:6px; margin-right:4px;">
+<button class="btn add" type="submit">Add Asset</button>
+</form>
+</div>
+</div>
+
+<!-- EMPLOYEES -->
+<div id="employees" class="section">
+<div class="table">
+<h2>Employees</h2>
+
+<table id="employeeTable">
+<tr><th>ID</th><th>Name</th><th>Department</th><th>Position</th></tr>
+{% for emp in employees %}
+<tr>
+<td>{{ emp.id }}</td>
+<td>{{ emp.name }}</td>
+<td>{{ emp.department }}</td>
+<td>{{ emp.position }}</td>
+</tr>
+{% endfor %}
+</table>
+
+<br>
+<form method="POST" action="/add-employee" style="display:inline;">
+<input type="text" name="id" placeholder="Employee ID" required style="padding:6px; margin-right:4px;">
+<input type="text" name="name" placeholder="Name" required style="padding:6px; margin-right:4px;">
+<input type="text" name="department" placeholder="Department" style="padding:6px; margin-right:4px;">
+<input type="text" name="position" placeholder="Position" style="padding:6px; margin-right:4px;">
+<input type="password" name="password" placeholder="Password" required style="padding:6px; margin-right:4px;">
+<button class="btn add" type="submit">Add Employee</button>
+</form>
+</div>
+</div>
+
+<!-- ASSIGN -->
+<div id="assignments" class="section">
+<div class="table">
+<h2>Assign Asset</h2>
+
+<table id="assignTable">
+<tr><th>Asset ID</th><th>Employee</th><th>Date</th></tr>
+{% for asset in assets %}
+{% if asset.status == "Assigned" %}
+<tr>
+<td>{{ asset.id }}</td>
+<td>{{ asset.borrowed_by }}</td>
+<td>{{ asset.borrow_date }}</td>
+</tr>
+{% endif %}
+{% endfor %}
+</table>
+
+<br>
+<form method="POST" action="/admin-assign-asset" style="display:inline;">
+<select name="asset_id" required style="padding:6px; margin-right:4px;">
+<option value="">Select Asset</option>
+{% for asset in assets %}
+{% if asset.status == "Available" %}
+<option value="{{ asset.id }}">{{ asset.id }} - {{ asset.name }}</option>
+{% endif %}
+{% endfor %}
+</select>
+<select name="employee_id" required style="padding:6px; margin-right:4px;">
+<option value="">Select Employee</option>
+{% for emp in employees %}
+<option value="{{ emp.id }}">{{ emp.id }} - {{ emp.name }}</option>
+{% endfor %}
+</select>
+<button class="btn assign" type="submit">Assign Asset</button>
+</form>
+</div>
+</div>
+
+<!-- REQUESTS -->
+<div id="requests" class="section">
+<div class="table">
+<h2>Employee Requests</h2>
+<table>
+<tr><th>ID</th><th>Employee</th><th>Asset Type</th><th>Quantity</th><th>Reason</th><th>Request Date</th><th>Status</th><th>Action</th></tr>
+{% for req in asset_requests %}
+<tr>
+<td>{{ req.id }}</td>
+<td>{{ req.employee }}</td>
+<td>{{ req.asset_type }}</td>
+<td>{{ req.quantity }}</td>
+<td>{{ req.reason }}</td>
+<td>{{ req.date }}</td>
+<td>{{ req.status }}</td>
+<td>
+{% if req.status == "Pending" %}
+<form method="POST" action="/admin-request-action" style="display:inline;">
+<input type="hidden" name="request_id" value="{{ req.id }}">
+<input type="hidden" name="action" value="approve">
+<button class="btn assign" type="submit">Approve</button>
+</form>
+<form method="POST" action="/admin-request-action" style="display:inline; margin-left:4px;">
+<input type="hidden" name="request_id" value="{{ req.id }}">
+<input type="hidden" name="action" value="reject">
+<button class="btn delete" type="submit">Reject</button>
+</form>
+{% else %}
+<span style="color:#555">{{ req.status }}</span>
+{% endif %}
+</td>
+</tr>
+{% endfor %}
+</table>
+</div>
+</div>
+
+<!-- MAINTENANCE -->
+<div id="maintenance" class="section">
+<div class="table">
+<h2>Maintenance</h2>
+
+<table id="maintenanceTable">
+<tr><th>ID</th><th>Asset</th><th>Issue</th><th>Description</th><th>Date</th><th>Status</th></tr>
+{% for maint in maintenance_requests %}
+<tr>
+<td>{{ maint.id }}</td>
+<td>{{ maint.asset_id }}</td>
+<td>{{ maint.issue_type }}</td>
+<td>{{ maint.description }}</td>
+<td>{{ maint.date }}</td>
+<td>{{ maint.status }}</td>
+</tr>
+{% endfor %}
+</table>
+
+<br>
+<form method="POST" action="/add-maintenance" style="display:inline;">
+<select name="asset_id" required style="padding:6px; margin-right:4px;">
+<option value="">Select Asset</option>
+{% for asset in assets %}
+<option value="{{ asset.id }}">{{ asset.id }} - {{ asset.name }}</option>
+{% endfor %}
+</select>
+<input type="text" name="issue" placeholder="Issue Type" required style="padding:6px; margin-right:4px;">
+<input type="text" name="description" placeholder="Description" style="padding:6px; margin-right:4px;">
+<button class="btn assign" type="submit">Add Maintenance</button>
+</form>
+</div>
+</div>
+
+<!-- DEPRECIATION -->
+<div id="depreciation" class="section">
+<div class="table">
+<h2>Depreciation</h2>
+
+<table id="depreciationTable">
+<tr><th>Name</th><th>Cost</th><th>Salvage</th><th>Life</th><th>Dep</th><th>Value</th></tr>
+{% for dep in depreciations %}
+<tr>
+<td>{{ dep.name }}</td>
+<td>{{ dep.cost }}</td>
+<td>{{ dep.salvage }}</td>
+<td>{{ dep.life }}</td>
+<td>{{ "%.2f"|format(dep.dep) }}</td>
+<td>{{ "%.2f"|format(dep.value) }}</td>
+</tr>
+{% endfor %}
+</table>
+
+<br>
+<form method="POST" action="/add-depreciation" style="display:inline;">
+<input type="text" name="name" placeholder="Asset Name" required style="padding:6px; margin-right:4px;">
+<input type="number" name="cost" placeholder="Cost" step="0.01" required style="padding:6px; margin-right:4px;">
+<input type="number" name="salvage" placeholder="Salvage Value" step="0.01" required style="padding:6px; margin-right:4px;">
+<input type="number" name="life" placeholder="Useful Life (years)" required style="padding:6px; margin-right:4px;">
+<button class="btn add" type="submit">Add Depreciation</button>
+</form>
+</div>
+</div>
+
+<!-- REPORTS -->
+<div id="reports" class="section">
+<div class="table">
+<h2>Reports</h2>
+
+<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
+<button class="btn add" onclick="showReport('inventory')">Inventory</button>
+<button class="btn assign" onclick="showReport('assignment')">Assignment</button>
+<button class="btn delete" onclick="showReport('maintenance')">Maintenance</button>
+<button class="btn edit" onclick="showReport('depreciation')">Depreciation</button>
+</div>
+
+<div id="reportDisplay" style="padding:15px;background:white;border-radius:10px;">
+Click a report button.
+</div>
+
+</div>
+</div>
+
+</div>
+
+<script>
+/* NAV */
+function showSection(id){
+document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+document.getElementById(id).classList.add('active');
+}
+
+function openUpdateAssetFromButton(button){
+    const id = button.getAttribute('data-id');
+    const name = button.getAttribute('data-name');
+    const condition = button.getAttribute('data-condition');
+    document.getElementById("updateAssetSection").style.display = "block";
+    document.getElementById("updateAssetId").value = id;
+    document.getElementById("updateAssetName").value = name;
+    document.getElementById("updateAssetCondition").value = condition || "Good";
+    document.getElementById("updateAssetName").focus();
+}
+
+function closeUpdateAsset(){
+    document.getElementById("updateAssetSection").style.display = "none";
+    document.getElementById("updateAssetId").value = "";
+    document.getElementById("updateAssetName").value = "";
+    document.getElementById("updateAssetCondition").value = "";
+}
+
+/* REPORTS */
+function showReport(type){
+    let d = document.getElementById("reportDisplay");
+
+    if(type === "inventory"){
+        d.innerHTML = "Assets: {{ assets|length }}";
+        return;
+    }
+
+    if(type === "assignment"){
+        d.innerHTML = "Assignments: {{ assets|selectattr('status', 'equalto', 'Assigned')|list|length }}";
+        return;
+    }
+
+    if(type === "maintenance"){
+        d.innerHTML = "Maintenance: {{ maintenance_requests|length }}";
+        return;
+    }
+
+    if(type === "depreciation"){
+        d.innerHTML = "Depreciation Records: {{ depreciations|length }}";
+        return;
+    }
+}
+
+/* LOGOUT */
+function logoutUser(){
+alert("Logging out...");
+location.href="/logout";
+}
+
+</script>
+
+</body>
+</html>

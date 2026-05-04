@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Employee Dashboard</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI', sans-serif;
+}
+
+body{
+    display:flex;
+    height:100vh;
+    background:#fff0f6;
+}
+
+/* SIDEBAR */
+.sidebar{
+    width:230px;
+    background:#ffb6c1;
+    color:white;
+    padding:20px;
+}
+
+.sidebar h2{
+    text-align:center;
+    margin-bottom:30px;
+}
+
+.sidebar a{
+    display:block;
+    color:white;
+    text-decoration:none;
+    padding:12px;
+    margin-bottom:10px;
+    border-radius:8px;
+    transition:0.3s;
+}
+
+.sidebar a:hover{
+    background:#ff8fb1;
+}
+
+/* MAIN */
+.main{
+    flex:1;
+    padding:20px;
+}
+
+/* HEADER */
+.header{
+    background:white;
+    padding:15px;
+    border-radius:10px;
+    box-shadow:0 3px 10px rgba(255,182,193,0.4);
+    margin-bottom:20px;
+}
+
+/* CARDS */
+.cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(200px,1fr));
+    gap:20px;
+}
+
+.card{
+    background:white;
+    padding:20px;
+    border-radius:12px;
+    text-align:center;
+    box-shadow:0 5px 15px rgba(255,182,193,0.4);
+}
+
+.card h3{
+    color:#ff8fb1;
+    margin-bottom:10px;
+}
+
+.card p{
+    font-size:22px;
+    font-weight:bold;
+}
+
+/* ACTION BUTTONS */
+.actions{
+    margin-top:25px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:15px;
+}
+
+.action-btn{
+    background:#ff4d6d;
+    color:white;
+    border:none;
+    padding:12px 18px;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:500;
+    transition:0.3s;
+}
+
+.action-btn:hover{
+    background:#ff6f8b;
+    transform:translateY(-2px);
+}
+</style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <h2>Employee</h2>
+
+    <a href="/employee-dashboard">Dashboard</a>
+    <a href="/assigned-assets">View Assigned Assets</a>
+    <a href="/request-asset">Request Asset</a>
+    <a href="/report-issue">Report Issue</a>
+    <a href="/view-assets">View All Assets</a>
+    <a href="/update-profile">Update Profile</a>
+    <a href="/change-password">Change Password</a>
+    <a href="/logout">Logout</a>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+<!-- HEADER -->
+<div class="header">
+    <h2>Welcome Employee!</h2>
+    <p>Manage your assigned assets and requests</p>
+</div>
+
+<!-- DASHBOARD CARDS -->
+<div class="cards">
+
+<div class="card">
+    <h3>Your Assigned Assets</h3>
+    <p>{{ assigned }}</p>
+</div>
+
+<div class="card">
+    <h3>Pending Requests</h3>
+    <p>{{ requests }}</p>
+</div>
+
+<div class="card">
+    <h3>Available Assets</h3>
+    <p>{{ available }}</p>
+</div>
+
+<div class="card">
+    <h3>Reported Issues</h3>
+    <p>{{ issues }}</p>
+</div>
+
+</div>
+
+<!-- QUICK ACTIONS -->
+<div class="actions">
+    <button class="action-btn" onclick="location.href='/assigned-assets'">View My Assets</button>
+    <button class="action-btn" onclick="location.href='/request-asset'">Request Asset</button>
+    <button class="action-btn" onclick="location.href='/report-issue'">Report Issue</button>
+</div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Report Issue</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI', sans-serif;
+}
+
+body{
+    display:flex;
+    height:100vh;
+    background:#fff0f6;
+}
+
+/* SIDEBAR */
+.sidebar{
+    width:230px;
+    background:#ffb6c1;
+    color:white;
+    padding:20px;
+}
+
+.sidebar h2{
+    text-align:center;
+    margin-bottom:30px;
+}
+
+.sidebar a{
+    display:block;
+    color:white;
+    text-decoration:none;
+    padding:12px;
+    margin-bottom:10px;
+    border-radius:8px;
+    transition:0.3s;
+}
+
+.sidebar a:hover{
+    background:#ff8fb1;
+}
+
+/* MAIN */
+.main{
+    flex:1;
+    padding:20px;
+}
+
+/* HEADER */
+.header{
+    background:white;
+    padding:15px;
+    border-radius:10px;
+    box-shadow:0 3px 10px rgba(255,182,193,0.4);
+    margin-bottom:20px;
+}
+
+/* FORM */
+.form-card{
+    background:white;
+    padding:25px;
+    border-radius:12px;
+    box-shadow:0 5px 15px rgba(255,182,193,0.4);
+    max-width:550px;
+}
+
+.form-card h3{
+    color:#ff8fb1;
+    margin-bottom:15px;
+}
+
+label{
+    display:block;
+    margin-top:12px;
+    font-weight:500;
+}
+
+input, select, textarea{
+    width:100%;
+    padding:10px;
+    margin-top:5px;
+    border-radius:8px;
+    border:1px solid #ffc2d1;
+    outline:none;
+}
+
+textarea{
+    resize:none;
+    height:120px;
+}
+
+button{
+    margin-top:15px;
+    width:100%;
+    padding:12px;
+    background:#ff4d6d;
+    color:white;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:500;
+    transition:0.3s;
+}
+
+button:hover{
+    background:#ff6f8b;
+}
+</style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <h2>Employee</h2>
+
+    <a href="/employee-dashboard">Dashboard</a>
+    <a href="/assigned-assets">View Assigned Assets</a>
+    <a href="/request-asset">Request Asset</a>
+    <a href="/report-issue">Report Issue</a>
+    <a href="/view-assets">View All Assets</a>
+    <a href="/update-profile">Update Profile</a>
+    <a href="/change-password">Change Password</a>
+    <a href="/logout">Logout</a>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+<div class="header">
+    <h2>Report Issue</h2>
+    <p>Report problems with your assigned assets</p>
+</div>
+
+<div class="form-card">
+    <h3>Issue Report Form</h3>
+
+    <form method="POST" action="/report-issue">
+
+        <label>Asset Name / ID</label>
+        <input type="text" name="asset_id" placeholder="e.g. Laptop A001" required>
+
+        <label>Issue Type</label>
+        <select name="issue_type" required>
+            <option value="">-- Select Issue --</option>
+            <option value="Hardware Failure">Hardware Failure</option>
+            <option value="Software Issue">Software Issue</option>
+            <option value="Performance Problem">Performance Problem</option>
+            <option value="Missing Asset">Missing Asset</option>
+            <option value="Other">Other</option>
+        </select>
+
+        <label>Description</label>
+        <textarea name="description" placeholder="Describe the issue in detail..." required></textarea>
+
+        <button type="submit">Submit Report</button>
+    </form>
+</div>
+
+</div>
+
+</body>
+</html>

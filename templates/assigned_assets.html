@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Assigned Assets</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI', sans-serif;
+}
+
+body{
+    display:flex;
+    height:100vh;
+    background:#fff0f6;
+}
+
+/* SIDEBAR */
+.sidebar{
+    width:230px;
+    background:#ffb6c1;
+    color:white;
+    padding:20px;
+}
+
+.sidebar h2{
+    text-align:center;
+    margin-bottom:30px;
+}
+
+.sidebar a{
+    display:block;
+    color:white;
+    text-decoration:none;
+    padding:12px;
+    margin-bottom:10px;
+    border-radius:8px;
+    transition:0.3s;
+}
+
+.sidebar a:hover{
+    background:#ff8fb1;
+}
+
+/* MAIN */
+.main{
+    flex:1;
+    padding:20px;
+}
+
+/* HEADER */
+.header{
+    background:white;
+    padding:15px;
+    border-radius:10px;
+    box-shadow:0 3px 10px rgba(255,182,193,0.4);
+    margin-bottom:20px;
+}
+
+/* TABLE */
+.table-card{
+    background:white;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 5px 15px rgba(255,182,193,0.4);
+    overflow-x:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th, td{
+    padding:12px;
+    text-align:left;
+    border-bottom:1px solid #ffd1dc;
+}
+
+th{
+    background:#ffb6c1;
+    color:white;
+}
+
+tr:hover{
+    background:#fff0f6;
+}
+
+/* STATUS BADGE */
+.status{
+    padding:5px 10px;
+    border-radius:20px;
+    font-size:12px;
+    color:white;
+}
+
+.active{
+    background:#28a745;
+}
+
+.pending{
+    background:#ff9800;
+}
+
+.returned{
+    background:#6c757d;
+}
+</style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <h2>Employee</h2>
+
+    <a href="/employee-dashboard">Dashboard</a>
+    <a href="/assigned-assets">View Assigned Assets</a>
+    <a href="/request-asset">Request Asset</a>
+    <a href="/report-issue">Report Issue</a>
+    <a href="/view-assets">View All Assets</a>
+    <a href="/update-profile">Update Profile</a>
+    <a href="/change-password">Change Password</a>
+    <a href="/logout">Logout</a>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+<div class="header">
+    <h2>Your Assigned Assets</h2>
+    <p>List of assets currently assigned to you</p>
+</div>
+
+<div class="table-card">
+
+<table>
+    <thead>
+        <tr>
+            <th>Asset ID</th>
+            <th>Asset Name</th>
+            <th>Category</th>
+            <th>Date Assigned</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        <!-- Flask dynamic data -->
+        {% for asset in assets %}
+        <tr>
+            <td>{{ asset.id }}</td>
+            <td>{{ asset.name }}</td>
+            <td>{{ asset.category }}</td>
+            <td>{{ asset.date_assigned }}</td>
+            <td>
+                <span class="status active">{{ asset.status }}</span>
+            </td>
+        </tr>
+        {% endfor %}
+
+    </tbody>
+</table>
+
+</div>
+
+</div>
+
+</body>
+</html>
