@@ -564,6 +564,7 @@ def change_password():
 @app.route("/logout")
 def logout():
     session.clear()
+    return redirect(url_for("portal"))
 
 try:
     from vercel_wsgi import make_app
