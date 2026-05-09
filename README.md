@@ -124,3 +124,6 @@ This module monitors asset depreciation over time and helps determine asset valu
 - Asset must have a valid acquisition date
 - Depreciation must follow a defined method (e.g., straight-line)
 - Asset condition must be updated regularly
+
+Tap to open:
+https://oam-system.vercel.app/
